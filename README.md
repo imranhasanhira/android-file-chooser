@@ -1,7 +1,16 @@
 android-file-chooser
 ====================
 
-This is a file chooser for android platform.
+A Simple file chooser for android platform. No more extra activity is required. It'll use in activity dialog to show the contents. Read installation details for further use.
+
+Features:
+=========
+1. Easy file selection
+2. Directory selection
+3. Save as dialog to save new file
+4. New file will be created if it doesn't exist
+5. While saving new file, if there exists a file with the same name, it'll ask for permission to overwrite.
+6. Callback for handling file selection event.
 
 
 
