@@ -2,6 +2,7 @@ package com.ihhira.android.filechooser;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,6 +24,12 @@ public class FileChooser implements OnClickListener {
 	enum DialogType {
 		SELECT_FILE, SELECT_DIRECTORY, SAVE_AS
 	}
+
+	interface FileSelectionCallback {
+		public void onSelect(File file);
+	}
+
+	FileSelectionCallback callback;
 
 	private static final String TAG = "FileChooserDialog";
 
@@ -46,8 +53,8 @@ public class FileChooser implements OnClickListener {
 	private Dialog currentDialog;
 	private DialogType dialogType = DialogType.SELECT_FILE;
 
-	public FileChooser(Context context, String title,
-			DialogType dialogType, File startingFile) {
+	public FileChooser(Context context, String title, DialogType dialogType,
+			File startingFile) {
 		this.dialogType = dialogType;
 		this.title = title;
 		this.context = context;
@@ -62,7 +69,8 @@ public class FileChooser implements OnClickListener {
 		}
 	}
 
-	public void show() {
+	public void show(FileSelectionCallback callback) {
+		this.callback = callback;
 		loadFilelist();
 	}
 
@@ -72,7 +80,7 @@ public class FileChooser implements OnClickListener {
 		}
 
 		Builder builder = new Builder(context);
-		builder.setTitle(title + "\n" + currentFile.getAbsolutePath());
+		builder.setTitle(title);
 
 		addAdapter(context, builder);
 
@@ -136,8 +144,10 @@ public class FileChooser implements OnClickListener {
 
 	protected void completeSelection(String filename) {
 		currentDialog.dismiss();
-		Log.d(TAG, "Selected: " + currentFile.getAbsolutePath()
-				+ File.pathSeparator + filename);
+		if (callback != null) {
+			callback.onSelect(new File(currentFile, filename));
+			callback = null;
+		}
 	}
 
 	protected void loadFilenameDialog(String filename) {
@@ -162,7 +172,11 @@ public class FileChooser implements OnClickListener {
 					Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT)
 							.show();
 				} else {
-					completeSelection(filename);
+					if (new File(currentFile, filename).exists()) {
+						loadDeleteExistingFileDialog(filename);
+					} else {
+						completeSelection(filename);
+					}
 				}
 			}
 		});
@@ -175,6 +189,43 @@ public class FileChooser implements OnClickListener {
 			}
 		});
 		currentDialog = builder.show();
+	}
+
+	protected void loadDeleteExistingFileDialog(final String newFileName) {
+		Builder builder = new Builder(context);
+		builder.setTitle("File already exist. Delete existing ?");
+		builder.setPositiveButton("Yes", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				File selectedFile = new File(currentFile, newFileName);
+				selectedFile.delete();
+				try {
+					selectedFile.createNewFile();
+					completeSelection(newFileName);
+				} catch (IOException e) {
+					e.printStackTrace();
+					loadFilelist();
+				}
+			}
+		});
+
+		builder.setNegativeButton("No", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				loadFilelist();
+			}
+		});
+		builder.setOnCancelListener(new OnCancelListener() {
+
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				loadFilelist();
+			}
+		});
+		builder.show();
+
 	}
 
 	@Override
