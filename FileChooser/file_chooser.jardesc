@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
-    <jar path="D:/CoCuri/Eclipse_Projects/android-file-chooser/bin/FileChooser.jar"/>
+    <jar path="../bin/FileChooser.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/FileChooser/file_chooser.jardesc" exportErrors="false" exportWarnings="false" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>

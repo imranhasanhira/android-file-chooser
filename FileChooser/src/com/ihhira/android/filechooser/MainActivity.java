@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements FileSelectionCallback {
 	public void onSelect(File file) {
 		String text = ">> " + file.getAbsolutePath();
 		Log.d(TAG, text);
-		tvStatus.append(text);
+		tvStatus.append(text+"\n");
 	}
 
 }
