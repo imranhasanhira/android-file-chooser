@@ -56,7 +56,7 @@ public class FileChooser implements OnClickListener {
 	/**
 	 * 
 	 */
-	private FilenameFilter fileFilter = new FilenameFilter() {
+	private FilenameFilter filenameFilter = new FilenameFilter() {
 
 		@Override
 		public boolean accept(File dir, String filename) {
@@ -99,9 +99,57 @@ public class FileChooser implements OnClickListener {
 
 		ImageLib imgLib = new ImageLib();
 		folderDrawable = imgLib.get(ImageLib.FOLDER);
-		fileDrawable = imgLib.get(ImageLib.FILE_1);
+		fileDrawable = imgLib.get(ImageLib.FILE_2);
 		upFolderDrawable = imgLib.get(ImageLib.UP_FOLDER_1);
 
+	}
+
+	/**
+	 * @param filenameFilter
+	 * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )
+	 */
+	public void setFilelistFilter(FilenameFilter filenameFilter) {
+		this.filenameFilter = filenameFilter;
+	}
+
+	/**
+	 * @param commaSeparatedExtensions
+	 * @param hiddenAllowed
+	 * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )
+	 */
+	public void setFilelistFilter(final String commaSeparatedExtensions,
+			final boolean hiddenAllowed) {
+		this.filenameFilter = new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String filename) {
+				File file = new File(dir, filename);
+				if (file.isHidden()) {
+					return hiddenAllowed;
+				}
+				if (file.isDirectory()) {
+					return true;
+				}
+				String fileExtension = getFileExtension(filename);
+
+				String[] allowedExtensions = commaSeparatedExtensions
+						.split(",");
+				for (String allowedExtension : allowedExtensions) {
+					if (fileExtension.equals(allowedExtension)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+	}
+
+	protected String getFileExtension(String filename) {
+		int lastIndexOfDot = filename.lastIndexOf(".");
+		if (lastIndexOfDot + 1 < filename.length()) {
+			return filename.substring(lastIndexOfDot + 1);
+		}
+		return null;
 	}
 
 	/**
@@ -146,7 +194,7 @@ public class FileChooser implements OnClickListener {
 			fileList.add(PARENT_FILE_NAME);
 		}
 
-		File[] childFiles = currentFile.listFiles(fileFilter);
+		File[] childFiles = currentFile.listFiles(filenameFilter);
 		if (childFiles != null) {
 			Arrays.sort(childFiles, new Comparator<File>() {
 
@@ -315,10 +363,12 @@ public class FileChooser implements OnClickListener {
 
 	}
 
-	/* 
-	 * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )
-	 *(non-Javadoc)
-	 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+	/*
+	 * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )(non-Javadoc)
+	 * 
+	 * @see
+	 * android.content.DialogInterface.OnClickListener#onClick(android.content
+	 * .DialogInterface, int)
 	 */
 	@Override
 	public void onClick(DialogInterface dialog, int which) {

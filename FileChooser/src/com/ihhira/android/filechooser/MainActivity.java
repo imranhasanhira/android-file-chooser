@@ -53,6 +53,7 @@ public class MainActivity extends Activity implements FileSelectionCallback {
 			public void onClick(View arg0) {
 				FileChooser dialog = new FileChooser(MainActivity.this,
 						"Select a file", DialogType.SELECT_FILE, null);
+				dialog.setFilelistFilter("jpg, jpeg", false);
 				dialog.show(MainActivity.this);
 			}
 		});
