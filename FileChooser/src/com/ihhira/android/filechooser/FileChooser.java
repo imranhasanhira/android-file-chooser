@@ -32,7 +32,7 @@ import android.widget.Toast;
  * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )
  */
 public class FileChooser implements OnClickListener {
-	enum DialogType {
+	public enum DialogType {
 		SELECT_FILE, SELECT_DIRECTORY, SAVE_AS
 	}
 
@@ -40,13 +40,13 @@ public class FileChooser implements OnClickListener {
 	 * 
 	 * @author MD IMRAN HASAN HIRA ( imranhasanhira@gmail.com )
 	 */
-	interface FileSelectionCallback {
+	public interface FileSelectionCallback {
 		public void onSelect(File file);
 	}
 
-	FileSelectionCallback callback;
+	private FileSelectionCallback callback;
 
-	private static final String TAG = "FileChooserDialog";
+	//private static final String TAG = "FileChooserDialog";
 
 	private static final String PARENT_FILE_NAME = "..";
 
