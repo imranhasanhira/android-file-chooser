@@ -17,7 +17,7 @@ Features:
 Sample code:
 ============
 
-    FileChooser fileChooser = new FileChooser(context, title, DialogType.SELECT_FILE, null);
+    FileChooser fileChooser = new FileChooser(YOUR_ACTIVITY.this, title, DialogType.SELECT_FILE, null);
     FileSelectionCallback callback = new FileSelectionCallback() {
     	
         @Override
